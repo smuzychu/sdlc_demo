@@ -65,8 +65,8 @@ function App() {
     <div className="app-shell">
       <header className="app-header">
         <div className="app-header__inner">
-          <a class="brand" href="./" aria-label="Marketplace, inicio">
-            <span class="brand__mark" aria-hidden="true">
+          <a className="brand" href="./" aria-label="Marketplace, inicio">
+            <span className="brand__mark" aria-hidden="true">
               MP
             </span>
             <span>
@@ -85,9 +85,7 @@ function App() {
           <div>
             <span className="eyebrow">Marketplace Online</span>
             <h1>Vende y compra productos al por mayor.</h1>
-            <p>
-              Plataforma completa para gestionar tus productos y ventas.
-            </p>
+            <p>Plataforma completa para gestionar tus productos y ventas.</p>
           </div>
           <Button
             variant="secondary"
