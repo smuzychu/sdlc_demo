@@ -1,6 +1,5 @@
 import type { Truck } from '../domain/truck'
 import { TRUCK_STATUS_LABELS } from '../domain/truck'
-import { Button } from './Button'
 
 type TruckCardProps = {
   truck: Truck
@@ -37,11 +36,19 @@ export const TruckCard = ({ truck, onEdit, onDelete }: TruckCardProps) => {
       </div>
 
       <h3 className="task-card__title">
-        {truck.plate} <small style={{ fontWeight: 'normal', fontSize: '0.85rem' }}>({truck.driver})</small>
+        {truck.plate}{' '}
+        <small style={{ fontWeight: 'normal', fontSize: '0.85rem' }}>({truck.driver})</small>
       </h3>
       <p className="task-card__description">📍 {truck.location}</p>
 
-      <div style={{ marginTop: '0.75rem', fontSize: '0.85rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+      <div
+        style={{
+          marginTop: '0.75rem',
+          fontSize: '0.85rem',
+          borderTop: '1px solid var(--border-color)',
+          paddingTop: '0.5rem',
+        }}
+      >
         <strong>Sensores activos:</strong>
         <ul style={{ margin: '0.25rem 0 0 1rem', padding: 0 }}>
           {truck.sensors.map((s) => (
@@ -52,7 +59,10 @@ export const TruckCard = ({ truck, onEdit, onDelete }: TruckCardProps) => {
         </ul>
       </div>
 
-      <div className="task-card__footer" style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+      <div
+        className="task-card__footer"
+        style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}
+      >
         Último movimiento: {new Date(truck.lastMovementTime).toLocaleTimeString()}
       </div>
     </article>

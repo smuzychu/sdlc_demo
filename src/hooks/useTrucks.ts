@@ -15,7 +15,9 @@ const reducer = (state: Truck[], action: TruckAction): Truck[] => {
     case 'create':
       return [createTruck(action.input), ...state]
     case 'update':
-      return state.map((truck) => (truck.id === action.id ? updateTruck(truck, action.input) : truck))
+      return state.map((truck) =>
+        truck.id === action.id ? updateTruck(truck, action.input) : truck,
+      )
     case 'delete':
       return state.filter((truck) => truck.id !== action.id)
     case 'replace':

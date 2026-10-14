@@ -12,12 +12,7 @@ type TruckFiltersProps = {
   onClear: () => void
 }
 
-export const TruckFilters = ({
-  value,
-  resultCount,
-  onChange,
-  onClear,
-}: TruckFiltersProps) => {
+export const TruckFilters = ({ value, resultCount, onChange, onClear }: TruckFiltersProps) => {
   const hasFilters = value.search !== '' || value.status !== 'all'
 
   return (
