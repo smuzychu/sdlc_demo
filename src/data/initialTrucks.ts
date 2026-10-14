@@ -1,0 +1,80 @@
+import type { Truck } from '../domain/truck'
+
+export const initialTrucks: Truck[] = [
+  {
+    id: 'truck-1',
+    plate: 'AA-123-BB',
+    driver: 'Carlos Gómez',
+    status: 'activo',
+    location: 'Ruta 9 km 142, Buenos Aires',
+    speedKmH: 85,
+    lastMovementTime: new Date().toISOString(),
+    sensors: [
+      {
+        sensorId: 'sens-mov-01',
+        type: 'movimiento',
+        value: 1,
+        unit: 'bool',
+        status: 'normal',
+        timestamp: new Date().toISOString(),
+      },
+      {
+        sensorId: 'sens-vel-01',
+        type: 'velocidad',
+        value: 85,
+        unit: 'km/h',
+        status: 'normal',
+        timestamp: new Date().toISOString(),
+      },
+    ],
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'truck-2',
+    plate: 'AC-456-DD',
+    driver: 'María Fernández',
+    status: 'detenido',
+    location: 'Centro de Distribución Norte',
+    speedKmH: 0,
+    lastMovementTime: new Date(Date.now() - 3600000).toISOString(),
+    sensors: [
+      {
+        sensorId: 'sens-mov-02',
+        type: 'movimiento',
+        value: 0,
+        unit: 'bool',
+        status: 'normal',
+        timestamp: new Date().toISOString(),
+      },
+    ],
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: 'truck-3',
+    plate: 'AE-789-FF',
+    driver: 'Esteban Quito',
+    status: 'alerta',
+    location: 'Autopista Rosario-Córdoba km 310',
+    speedKmH: 115,
+    lastMovementTime: new Date().toISOString(),
+    sensors: [
+      {
+        sensorId: 'sens-mov-03',
+        type: 'movimiento',
+        value: 1,
+        unit: 'bool',
+        status: 'warning',
+        timestamp: new Date().toISOString(),
+      },
+      {
+        sensorId: 'sens-temp-03',
+        type: 'temperatura',
+        value: 38.5,
+        unit: '°C',
+        status: 'danger',
+        timestamp: new Date().toISOString(),
+      },
+    ],
+    updatedAt: new Date().toISOString(),
+  },
+]

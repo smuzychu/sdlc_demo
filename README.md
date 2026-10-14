@@ -1,89 +1,64 @@
-# TaskFlow Frontend
+# Portal de Monitoreo de Camiones
 
-Frontend de referencia para administrar tareas mediante un CRUD ejecutado completamente en el navegador. No requiere backend ni base de datos: la persistencia utiliza `localStorage`.
+Este proyecto es un prototipo de un portal web para monitorear camiones conectados a sensores de movimiento y otros tipos de telemetría.
 
 ## Stack
 
 - React 19
 - TypeScript
 - Vite
-- Vitest + Testing Library
-- Oxlint + Prettier
-- GitHub Actions
-- GitHub Pages
 
 ## Funcionalidades
 
-- Alta, modificación y eliminación de tareas.
-- Estado, prioridad, fecha objetivo y descripción.
-- Búsqueda y filtros combinables.
-- Resumen de métricas.
-- Persistencia local versionada.
-- Diseño responsive y navegación por teclado.
-- Validación de formularios y anuncios accesibles.
+- Visualización de camiones con estado, ubicación, velocidad y sensores.
+- Filtros por búsqueda y estado.
+- Simulación de datos de sensores con actualización automática (polling cada 5 segundos).
+- Alta, edición y eliminación de camiones.
 
 ## Requisitos
 
-- Node.js 24 recomendado. El proyecto también acepta Node.js 22.12 o superior.
+- Node.js 24 o superior.
 - npm 10 o superior.
 
 ## Ejecución local
 
+1. Instalar dependencias:
+
 ```bash
 npm ci
-npm run dev
 ```
 
-Vite mostrará la URL local, normalmente `http://localhost:5173`.
-
-## Comandos
+2. Ejecutar la aplicación:
 
 ```bash
 npm run dev
-npm run format
-npm run format:check
-npm run lint
-npm run typecheck
-npm run test
-npm run build
-npm run preview
-npm run validate
 ```
 
-## Estrategia de ramas y pipelines
+3. Abrir en el navegador la URL que muestra Vite (por defecto http://localhost:5173).
 
-### Pull request hacia `dev` o `main`
+## Simulación de sensores
 
-`.github/workflows/pull-request.yml` ejecuta formato, lint, validación TypeScript, tests y build. No despliega.
+Para simular datos de sensores y enviar telemetría al backend (endpoint HTTP), se incluye un script básico:
 
-### Merge o push a `dev`
-
-`.github/workflows/dev.yml` repite el quality gate, genera el build y lo publica como artefacto descargable durante 7 días.
-
-### Merge o push a `main`
-
-`.github/workflows/main.yml` valida, compila y despliega el contenido de `dist` en GitHub Pages.
-
-Flujo recomendado:
-
-```text
-feature/* -> pull request -> dev -> pull request -> main -> GitHub Pages
+```bash
+node scripts/simulateSensors.ts
 ```
 
-## Configuración inicial en GitHub
+Este script envía datos aleatorios cada 5 segundos al endpoint configurado en `scripts/simulateSensors.ts`.
 
-1. Crear las ramas `dev` y `main`.
-2. Ir a `Settings > Pages` y seleccionar `GitHub Actions` como origen.
-3. Proteger `main` y `dev` desde `Settings > Branches` o mediante rulesets.
-4. Exigir el check `Quality gate` antes de permitir merges.
-5. Mantener deshabilitados los pushes directos a `main`.
+## Estructura relevante
 
-El `base path` de Vite se calcula automáticamente durante GitHub Actions. Funciona tanto para repositorios de proyecto (`usuario.github.io/repositorio/`) como para repositorios raíz (`usuario.github.io`).
+- `src/domain/truck.ts`: Modelos de datos para camiones y sensores.
+- `src/data/initialTrucks.ts`: Datos iniciales de ejemplo.
+- `src/hooks/useTrucks.ts`: Lógica de estado y simulación de telemetría.
+- `src/components/TruckDashboard.tsx`: Componente principal del dashboard.
+- `src/components/TruckCard.tsx`: Tarjeta individual de camión.
+- `src/components/TruckFilters.tsx`: Filtros para la lista de camiones.
+- `src/components/TruckForm.tsx`: Formulario para crear/editar camiones.
+- `src/components/TruckStats.tsx`: Estadísticas de la flota.
 
-## Persistencia
+## Notas
 
-Los datos quedan guardados en la clave `taskflow.tasks.v1` del `localStorage` del navegador. No se sincronizan entre dispositivos ni usuarios.
-
-## Próxima evolución posible
-
-La capa `src/services/taskStorage.ts` puede reemplazarse por un cliente HTTP sin modificar los componentes principales. Esa separación permite incorporar posteriormente un backend REST, autenticación y una base de datos.
+- El backend para recibir telemetría no está implementado en este prototipo.
+- La simulación de sensores se realiza localmente en el frontend y con el script de simulación.
+- No se incluye autenticación ni mapas avanzados.
