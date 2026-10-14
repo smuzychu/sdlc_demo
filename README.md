@@ -17,34 +17,42 @@ Este proyecto es un prototipo de un portal web para monitorear camiones conectad
 
 ## Requisitos
 
-- Node.js 24 o superior.
-- npm 10 o superior.
+- Node.js 22.13 o superior.
+- pnpm 10.15.0.
 
 ## Ejecución local
 
 1. Instalar dependencias:
 
 ```bash
-npm ci
+pnpm install --frozen-lockfile
 ```
 
 2. Ejecutar la aplicación:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 3. Abrir en el navegador la URL que muestra Vite (por defecto http://localhost:5173).
 
 ## Simulación de sensores
 
-Para simular datos de sensores y enviar telemetría al backend (endpoint HTTP), se incluye un script básico:
+La demo de GitHub Pages es estática: el frontend simula telemetría cada cinco segundos y guarda la flota en `localStorage`. No recibe datos de sensores externos.
+
+El script genera un evento JSON, sin dependencias adicionales ni llamadas a un backend inexistente:
 
 ```bash
-node scripts/simulateSensors.ts
+node --experimental-strip-types scripts/simulateSensors.ts
 ```
 
-Este script envía datos aleatorios cada 5 segundos al endpoint configurado en `scripts/simulateSensors.ts`.
+Para generar eventos cada cinco segundos:
+
+```bash
+node --experimental-strip-types scripts/simulateSensors.ts --watch
+```
+
+Si disponés de un receptor HTTP real, podés enviarle eventos configurando `TELEMETRY_API_URL`. Ese receptor es una integración externa y no está alojado en GitHub Pages.
 
 ## Estructura relevante
 
@@ -60,5 +68,5 @@ Este script envía datos aleatorios cada 5 segundos al endpoint configurado en `
 ## Notas
 
 - El backend para recibir telemetría no está implementado en este prototipo.
-- La simulación de sensores se realiza localmente en el frontend y con el script de simulación.
+- El script genera eventos independientes; no modifica el estado de la demo del navegador.
 - No se incluye autenticación ni mapas avanzados.

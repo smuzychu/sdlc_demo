@@ -1,6 +1,4 @@
-import fetch from 'node-fetch'
-
-const API_URL = 'http://localhost:3000/api/telemetry'
+const API_URL = process.env.TELEMETRY_API_URL
 
 const simulateSensorData = () => {
   const sensorId = `sens-${Math.floor(Math.random() * 900) + 100}`
@@ -16,6 +14,10 @@ const simulateSensorData = () => {
 
 const sendTelemetry = async () => {
   const data = simulateSensorData()
+  if (!API_URL) {
+    console.log(JSON.stringify(data))
+    return
+  }
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -32,4 +34,5 @@ const sendTelemetry = async () => {
   }
 }
 
-setInterval(sendTelemetry, 5000)
+await sendTelemetry()
+if (process.argv.includes('--watch')) setInterval(sendTelemetry, 5000)
