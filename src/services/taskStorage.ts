@@ -1,6 +1,6 @@
 import { isTask, type Task } from '../domain/task'
 
-const STORAGE_KEY = 'taskflow.tasks.v1'
+const STORAGE_KEY = 'marketplace.products.v1'
 
 export const loadTasks = (fallback: Task[]): Task[] => {
   try {

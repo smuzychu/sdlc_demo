@@ -42,7 +42,7 @@ function App() {
   const handleCreate = (input: TaskInput) => {
     createTask(input)
     setIsCreating(false)
-    setAnnouncement(`Tarea ${input.title} creada.`)
+    setAnnouncement(`Producto ${input.title} creado.`)
   }
 
   const handleUpdate = (input: TaskInput) => {
@@ -50,14 +50,14 @@ function App() {
 
     updateTask(editingTask.id, input)
     setEditingTask(null)
-    setAnnouncement(`Tarea ${input.title} actualizada.`)
+    setAnnouncement(`Producto ${input.title} actualizado.`)
   }
 
   const handleDelete = () => {
     if (!taskToDelete) return
 
     deleteTask(taskToDelete.id)
-    setAnnouncement(`Tarea ${taskToDelete.title} eliminada.`)
+    setAnnouncement(`Producto ${taskToDelete.title} eliminado.`)
     setTaskToDelete(null)
   }
 
@@ -65,17 +65,17 @@ function App() {
     <div className="app-shell">
       <header className="app-header">
         <div className="app-header__inner">
-          <a className="brand" href="./" aria-label="TaskFlow, inicio">
+          <a className="brand" href="./" aria-label="Marketplace, inicio">
             <span className="brand__mark" aria-hidden="true">
-              TF
+              MP
             </span>
             <span>
-              <strong>TaskFlow</strong>
-              <small>Gestión simple de tareas</small>
+              <strong>Marketplace</strong>
+              <small>Compra y venta de productos al por mayor</small>
             </span>
           </a>
           <Button variant="primary" onClick={() => setIsCreating(true)}>
-            Nueva tarea
+            Nuevo producto
           </Button>
         </div>
       </header>
@@ -83,12 +83,9 @@ function App() {
       <main id="main-content" className="main-content">
         <section className="hero">
           <div>
-            <span className="eyebrow">Frontend de referencia</span>
-            <h1>Organizá el trabajo sin perder el foco.</h1>
-            <p>
-              CRUD completo, persistencia local, filtros y pipeline de calidad preparado para
-              GitHub.
-            </p>
+            <span className="eyebrow">Marketplace Online</span>
+            <h1>Vende y compra productos al por mayor.</h1>
+            <p>Plataforma completa para gestionar tus productos y ventas.</p>
           </div>
           <Button
             variant="secondary"
@@ -112,7 +109,7 @@ function App() {
         />
 
         {filteredTasks.length > 0 ? (
-          <section className="task-grid" aria-label="Listado de tareas">
+          <section className="task-grid" aria-label="Listado de productos">
             {filteredTasks.map((task) => (
               <TaskCard
                 key={task.id}
@@ -124,17 +121,17 @@ function App() {
           </section>
         ) : (
           <section className="empty-state">
-            <h2>No hay tareas que coincidan</h2>
-            <p>Probá con otros filtros o creá una tarea nueva.</p>
+            <h2>No hay productos que coincidan</h2>
+            <p>Probá con otros filtros o creá un producto nuevo.</p>
             <Button variant="primary" onClick={() => setIsCreating(true)}>
-              Crear tarea
+              Crear producto
             </Button>
           </section>
         )}
       </main>
 
       <footer className="app-footer">
-        <span>TaskFlow</span>
+        <span>Marketplace</span>
         <span>React + TypeScript + Vite</span>
       </footer>
 
@@ -144,7 +141,7 @@ function App() {
 
       {isCreating ? (
         <Modal
-          title="Nueva tarea"
+          title="Nuevo producto"
           description="Completá los datos principales. Podrás modificarlos después."
           onClose={() => setIsCreating(false)}
         >
@@ -154,8 +151,8 @@ function App() {
 
       {editingTask ? (
         <Modal
-          title="Editar tarea"
-          description="Actualizá el estado, prioridad o contenido de la tarea."
+          title="Editar producto"
+          description="Actualizá el estado, prioridad o contenido del producto."
           onClose={() => setEditingTask(null)}
         >
           <TaskForm
