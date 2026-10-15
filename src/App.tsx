@@ -1,120 +1,88 @@
-import React, { useState, useEffect } from 'react'
-import { Navbar } from './components/Navbar'
-import { Hero } from './components/Hero'
-import { Filters } from './components/Filters'
-import { Catalog } from './components/Catalog'
-import { BookingModal } from './components/BookingModal'
-import { HowItWorks } from './components/HowItWorks'
-import { FAQ } from './components/FAQ'
-import { Footer } from './components/Footer'
-import { escapes, type Escape } from './data/escapes'
+import React, { useState, useEffect, useCallback } from 'react'
+import Header from './components/Header'
+import Hero from './components/Hero'
+import Filters from './components/Filters'
+import Catalog from './components/Catalog'
+import HowItWorks from './components/HowItWorks'
+import FAQ from './components/FAQ'
+import Footer from './components/Footer'
+import BookingModal from './components/BookingModal'
+import { escapes as initialEscapes } from './data/escapes'
+import './index.css'
 
-export const App: React.FC = () => {
-  const [favorites, setFavorites] = useState<Set<string>>(new Set())
+const App: React.FC = () => {
+  const [escapes] = useState(initialEscapes)
   const [filters, setFilters] = useState({
     destination: '',
     category: '',
-    duration: null as number | null,
-    maxPrice: null as number | null,
+    maxDuration: 0,
+    maxPrice: 0,
   })
-  const [filteredEscapes, setFilteredEscapes] = useState<Escape[]>(escapes)
-  const [modalEscape, setModalEscape] = useState<Escape | null>(null)
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const saved = localStorage.getItem('favorites')
+    return saved ? JSON.parse(saved) : []
+  })
+  const [modalEscapeId, setModalEscapeId] = useState<string | null>(null)
 
   useEffect(() => {
-    // Load favorites from localStorage
-    const stored = localStorage.getItem('summit-escapes-favorites')
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as string[]
-        setFavorites(new Set(parsed))
-      } catch {
-        // ignore
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    // Save favorites to localStorage
-    localStorage.setItem('summit-escapes-favorites', JSON.stringify(Array.from(favorites)))
+    localStorage.setItem('favorites', JSON.stringify(favorites))
   }, [favorites])
 
-  useEffect(() => {
-    // Filter escapes
-    let result = escapes
-    if (filters.destination.trim()) {
-      const destLower = filters.destination.toLowerCase()
-      result = result.filter((e) => e.destination.toLowerCase().includes(destLower))
-    }
-    if (filters.category) {
-      result = result.filter((e) => e.category === filters.category)
-    }
-    if (filters.duration !== null) {
-      result = result.filter((e) => e.duration === filters.duration)
-    }
-    if (filters.maxPrice !== null) {
-      result = result.filter((e) => e.price <= filters.maxPrice!)
-    }
-    setFilteredEscapes(result)
-  }, [filters])
+  const filteredEscapes = escapes.filter((escapeItem) => {
+    const matchDestination = filters.destination
+      ? escapeItem.destination.toLowerCase().includes(filters.destination.toLowerCase())
+      : true
+    const matchCategory = filters.category ? escapeItem.category === filters.category : true
+    const matchDuration = filters.maxDuration ? escapeItem.duration <= filters.maxDuration : true
+    const matchPrice = filters.maxPrice ? escapeItem.price <= filters.maxPrice : true
+    return matchDestination && matchCategory && matchDuration && matchPrice
+  })
 
-  const toggleFavorite = (id: string) => {
-    setFavorites((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(id)) newSet.delete(id)
-      else newSet.add(id)
-      return newSet
-    })
-  }
+  const toggleFavorite = useCallback((id: string) => {
+    setFavorites((prev) => (prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]))
+  }, [])
+
+  const openModal = useCallback((id: string) => {
+    setModalEscapeId(id)
+  }, [])
+
+  const closeModal = useCallback(() => {
+    setModalEscapeId(null)
+  }, [])
 
   const clearFilters = () => {
-    setFilters({ destination: '', category: '', duration: null, maxPrice: null })
+    setFilters({ destination: '', category: '', maxDuration: 0, maxPrice: 0 })
   }
 
   return (
     <>
-      <Navbar
-        favoritesCount={favorites.size}
-        onFavoritesClick={() => setFilters({ ...filters, category: '', destination: '' })}
-      />
-      <Hero />
-      <main id="main-content">
+      <Header favoritesCount={favorites.length} />
+      <main>
+        <Hero />
         <Filters
-          destination={filters.destination}
-          setDestination={(value) => setFilters({ ...filters, destination: value })}
-          category={filters.category}
-          setCategory={(value) => setFilters({ ...filters, category: value })}
-          duration={filters.duration}
-          setDuration={(value) => setFilters({ ...filters, duration: value })}
-          maxPrice={filters.maxPrice}
-          setMaxPrice={(value) => setFilters({ ...filters, maxPrice: value })}
-          onClear={clearFilters}
+          filters={filters}
+          setFilters={setFilters}
+          clearFilters={clearFilters}
+          count={filteredEscapes.length}
         />
-        <p
-          style={{
-            maxWidth: 1440,
-            margin: '0 auto 1rem auto',
-            padding: '0 1rem',
-            color: '#142B35',
-          }}
-        >
-          Resultados: {filteredEscapes.length}
-        </p>
         <Catalog
           escapes={filteredEscapes}
           favorites={favorites}
-          onViewDetail={(id) => {
-            const found = escapes.find((e) => e.id === id)
-            if (found) setModalEscape(found)
-          }}
-          onToggleFavorite={toggleFavorite}
+          toggleFavorite={toggleFavorite}
+          openModal={openModal}
         />
         <HowItWorks />
         <FAQ />
       </main>
       <Footer />
-      {modalEscape && (
-        <BookingModal escapeItem={modalEscape} onClose={() => setModalEscape(null)} />
+      {modalEscapeId && (
+        <BookingModal
+          escapeItem={escapes.find((e) => e.id === modalEscapeId)!}
+          onClose={closeModal}
+        />
       )}
     </>
   )
 }
+
+export default App

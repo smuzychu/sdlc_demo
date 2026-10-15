@@ -15,7 +15,7 @@ export default function Card({ escape, onViewDetail, onToggleFavorite, isFavorit
     >
       <img
         src={escape.image}
-        alt={escape.alt}
+        alt={escape.imageAlt}
         className="rounded-[20px] mb-4 object-cover h-40 w-full"
         loading="lazy"
       />

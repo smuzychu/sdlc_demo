@@ -1,162 +1,110 @@
 import React from 'react'
 
 interface FiltersProps {
-  destination: string
-  setDestination: (value: string) => void
-  category: string
-  setCategory: (value: string) => void
-  duration: number | null
-  setDuration: (value: number | null) => void
-  maxPrice: number | null
-  setMaxPrice: (value: number | null) => void
-  onClear: () => void
+  filters: {
+    destination: string
+    category: string
+    maxDuration: number
+    maxPrice: number
+  }
+  setFilters: React.Dispatch<React.SetStateAction<FiltersProps['filters']>>
+  clearFilters: () => void
+  count: number
 }
 
-export const Filters: React.FC<FiltersProps> = ({
-  destination,
-  setDestination,
-  category,
-  setCategory,
-  duration,
-  setDuration,
-  maxPrice,
-  setMaxPrice,
-  onClear,
-}) => {
+const Filters: React.FC<FiltersProps> = ({ filters, setFilters, clearFilters, count }) => {
   return (
     <section
-      aria-label="Filtros de búsqueda"
+      aria-label="Filtros de escapadas"
       style={{
-        backgroundColor: '#F8F5EF',
-        padding: '1rem',
-        borderRadius: 20,
-        boxShadow: '0 4px 8px rgba(20, 43, 53, 0.1)',
-        marginBottom: '2rem',
-        maxWidth: 1440,
+        padding: '1rem 2rem',
+        backgroundColor: '#f8f5ef',
+        color: '#142b35',
+        maxWidth: '1440px',
         margin: '0 auto',
       }}
     >
       <form
         onSubmit={(e) => e.preventDefault()}
-        style={{ display: 'grid', gap: '1rem', gridTemplateColumns: '1fr', maxWidth: 600 }}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+          gap: '1rem',
+          alignItems: 'end',
+        }}
       >
-        <label htmlFor="destination-input">Destino</label>
-        <input
-          id="destination-input"
-          type="text"
-          value={destination}
-          onChange={(e) => setDestination(e.target.value)}
-          placeholder="Buscar por destino"
-          aria-label="Buscar por destino"
-          style={{ padding: '0.5rem', borderRadius: 8, border: '1px solid #ccc' }}
-        />
-
-        <fieldset>
-          <legend>Categoría</legend>
-          <label>
-            <input
-              type="radio"
-              name="category"
-              value=""
-              checked={category === ''}
-              onChange={() => setCategory('')}
-            />
-            Todas
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="category"
-              value="Montaña"
-              checked={category === 'Montaña'}
-              onChange={() => setCategory('Montaña')}
-            />
-            Montaña
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="category"
-              value="Playa"
-              checked={category === 'Playa'}
-              onChange={() => setCategory('Playa')}
-            />
-            Playa
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="category"
-              value="Naturaleza"
-              checked={category === 'Naturaleza'}
-              onChange={() => setCategory('Naturaleza')}
-            />
-            Naturaleza
-          </label>
-        </fieldset>
-
-        <label htmlFor="duration-input">Duración (días)</label>
-        <select
-          id="duration-input"
-          value={duration ?? ''}
-          onChange={(e) => setDuration(e.target.value ? Number(e.target.value) : null)}
-          aria-label="Filtrar por duración"
-          style={{ padding: '0.5rem', borderRadius: 8, border: '1px solid #ccc' }}
-        >
-          <option value="">Cualquier duración</option>
-          <option value="3">3 días</option>
-          <option value="4">4 días</option>
-          <option value="5">5 días</option>
-          <option value="6">6 días</option>
-          <option value="7">7 días</option>
-        </select>
-
-        <label htmlFor="price-input">Precio máximo (USD)</label>
-        <input
-          id="price-input"
-          type="number"
-          min="0"
-          value={maxPrice ?? ''}
-          onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : null)}
-          placeholder="Ejemplo: 1000"
-          aria-label="Filtrar por precio máximo"
-          style={{ padding: '0.5rem', borderRadius: 8, border: '1px solid #ccc' }}
-        />
-
-        <div className="filters__footer">
+        <div>
+          <label htmlFor="destination">Destino</label>
+          <input
+            id="destination"
+            type="text"
+            value={filters.destination}
+            onChange={(e) => setFilters((f) => ({ ...f, destination: e.target.value }))}
+            placeholder="Buscar destino"
+            aria-label="Buscar por destino"
+          />
+        </div>
+        <div>
+          <label htmlFor="category">Categoría</label>
+          <select
+            id="category"
+            value={filters.category}
+            onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}
+            aria-label="Filtrar por categoría"
+          >
+            <option value="">Todas</option>
+            <option value="Montaña">Montaña</option>
+            <option value="Playa">Playa</option>
+            <option value="Naturaleza">Naturaleza</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="maxDuration">Duración máxima (días)</label>
+          <input
+            id="maxDuration"
+            type="number"
+            min={0}
+            value={filters.maxDuration || ''}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, maxDuration: Number(e.target.value) || 0 }))
+            }
+            aria-label="Filtrar por duración máxima"
+          />
+        </div>
+        <div>
+          <label htmlFor="maxPrice">Precio máximo (USD)</label>
+          <input
+            id="maxPrice"
+            type="number"
+            min={0}
+            value={filters.maxPrice || ''}
+            onChange={(e) => setFilters((f) => ({ ...f, maxPrice: Number(e.target.value) || 0 }))}
+            aria-label="Filtrar por precio máximo"
+          />
+        </div>
+        <div>
           <button
             type="button"
-            onClick={onClear}
+            onClick={clearFilters}
             style={{
-              backgroundColor: '#F28B6B',
-              color: '#F8F5EF',
-              borderRadius: 20,
+              backgroundColor: '#f28b6b',
+              color: '#f8f5ef',
+              borderRadius: '8px',
               padding: '0.5rem 1rem',
-              border: 'none',
+              fontWeight: '600',
               cursor: 'pointer',
+              border: 'none',
             }}
           >
             Limpiar filtros
           </button>
-          <span aria-live="polite" aria-atomic="true" style={{ color: '#142B35' }}>
-            {/* El contador de resultados se mostrará en el componente padre */}
-          </span>
+        </div>
+        <div aria-live="polite" style={{ alignSelf: 'center', fontWeight: '600' }}>
+          {count} resultados
         </div>
       </form>
-      <style>{`
-        fieldset {
-          border: none;
-          padding: 0;
-          margin: 0 0 1rem 0;
-          display: flex;
-          gap: 1rem;
-          flex-wrap: wrap;
-        }
-        fieldset label {
-          cursor: pointer;
-          user-select: none;
-        }
-      `}</style>
     </section>
   )
 }
+
+export default Filters

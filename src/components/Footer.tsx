@@ -1,31 +1,38 @@
 import React from 'react'
 
-export const Footer: React.FC = () => {
+const Footer: React.FC = () => {
   return (
     <footer
       style={{
-        backgroundColor: '#147D78',
-        color: '#F8F5EF',
-        padding: '1rem 1.5rem',
-        maxWidth: 1440,
+        backgroundColor: '#f8f5ef',
+        color: '#142b35',
+        padding: '1rem 2rem',
+        borderTop: '1px solid #147d78',
+        maxWidth: '1440px',
         margin: '0 auto',
-        textAlign: 'center',
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '1rem',
       }}
     >
-      <nav aria-label="Navegación de pie de página">
-        <a href="#explore" style={{ color: '#F8F5EF', marginRight: '1rem' }}>
+      <nav>
+        <a href="#explorar" style={{ marginRight: '1rem', color: '#147d78', fontWeight: '600' }}>
           Explorar
         </a>
-        <a href="#how-it-works" style={{ color: '#F8F5EF', marginRight: '1rem' }}>
+        <a
+          href="#como-funciona"
+          style={{ marginRight: '1rem', color: '#147d78', fontWeight: '600' }}
+        >
           Cómo funciona
         </a>
-        <a href="#faq" style={{ color: '#F8F5EF' }}>
+        <a href="#preguntas-frecuentes" style={{ color: '#147d78', fontWeight: '600' }}>
           Preguntas frecuentes
         </a>
       </nav>
-      <p style={{ marginTop: '1rem', fontSize: '0.875rem' }}>
-        &copy; 2024 Summit Escapes. Fotos y créditos en la sección de destinos.
-      </p>
+      <p style={{ fontSize: '0.875rem', margin: 0 }}>Demo: destinos y reservas de ejemplo</p>
     </footer>
   )
 }
+
+export default Footer

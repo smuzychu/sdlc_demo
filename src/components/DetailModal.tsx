@@ -85,7 +85,7 @@ export default function DetailModal({ escape, onClose }: DetailModalProps) {
         </header>
 
         <section id="modal-description" className="p-6 text-[#142B35]">
-          <p>{escape.description}</p>
+          <p>{escape.itinerary.length > 0 ? escape.itinerary[0] : ''}</p>
           <h3 className="mt-4 font-semibold">Itinerario</h3>
           <ul className="list-disc list-inside">
             {escape.itinerary.map((item, idx) => (
