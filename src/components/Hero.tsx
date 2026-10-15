@@ -1,96 +1,80 @@
 import React from 'react'
 
-export const Hero: React.FC = () => {
+const Hero: React.FC = () => {
   return (
     <section
-      id="hero"
-      aria-label="Tu próxima pausa empieza acá"
+      id="explorar"
       style={{
-        backgroundColor: '#F8F5EF',
-        padding: '2rem 1rem',
-        maxWidth: 1440,
-        margin: '0 auto',
-        display: 'grid',
-        gridTemplateColumns: '1fr',
+        display: 'flex',
+        flexWrap: 'wrap',
+        padding: '2rem',
+        backgroundColor: '#f8f5ef',
+        color: '#142b35',
         gap: '2rem',
+        justifyContent: 'center',
       }}
     >
-      <div style={{ maxWidth: 600 }}>
-        <p
+      <div style={{ flex: '1 1 300px', maxWidth: '600px' }}>
+        <span
           style={{
-            color: '#147D78',
+            display: 'inline-block',
+            backgroundColor: '#147d78',
+            color: '#f8f5ef',
+            padding: '0.25rem 0.75rem',
+            borderRadius: '12px',
             fontWeight: '600',
-            fontSize: '1.25rem',
-            marginBottom: '0.5rem',
-          }}
-        >
-          Tu próxima pausa empieza acá
-        </p>
-        <h1
-          style={{
-            color: '#142B35',
-            fontSize: '2.5rem',
-            marginTop: 0,
+            fontSize: '1rem',
             marginBottom: '1rem',
           }}
         >
+          Tu próxima pausa empieza acá
+        </span>
+        <h1 style={{ fontSize: '2.5rem', margin: '0 0 1rem 0' }}>
           Escapate de la rutina. Volvé con historias.
         </h1>
-        <p style={{ color: '#142B35', fontSize: '1rem', marginBottom: '1.5rem' }}>
+        <p style={{ fontSize: '1.125rem', marginBottom: '1.5rem' }}>
           Descubrí destinos únicos y experiencias inolvidables para tu próxima escapada.
         </p>
         <a
-          href="#explore"
+          href="#explorar"
           style={{
-            backgroundColor: '#147D78',
-            color: '#F8F5EF',
-            padding: '0.75rem 1.5rem',
-            borderRadius: 20,
-            textDecoration: 'none',
-            fontWeight: '600',
             display: 'inline-block',
-            transition: 'background-color 0.3s ease',
+            backgroundColor: '#147d78',
+            color: '#f8f5ef',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '8px',
+            fontWeight: '600',
+            textDecoration: 'none',
+            cursor: 'pointer',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#125d5d')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#147D78')}
-          onFocus={(e) => (e.currentTarget.style.backgroundColor = '#125d5d')}
-          onBlur={(e) => (e.currentTarget.style.backgroundColor = '#147D78')}
         >
           Explorar escapadas
         </a>
       </div>
-      <div
-        aria-hidden="true"
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <div style={{ flex: '1 1 300px', maxWidth: '600px' }}>
         <img
-          src="/assets/mountain-hero.svg"
-          alt="Ilustración de paisaje montañoso"
+          src={import.meta.env.BASE_URL + 'assets/mountain-lake.jpg'}
+          alt="Paisaje de lago en las montañas al atardecer"
           style={{
             width: '100%',
-            height: 'auto',
-            borderRadius: 20,
+            borderRadius: '20px',
             boxShadow: '0 8px 16px rgba(20, 43, 53, 0.25)',
           }}
         />
+        <p style={{ fontSize: '0.75rem', marginTop: '0.5rem', color: '#147d78' }}>
+          Foto por Vyacheslav Argenberg -
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Mountain_lake,_Mylgval_mountain_cirque_before_sunset,_Caucasus_Mountains.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#147d78' }}
+          >
+            Wikimedia Commons
+          </a>
+        </p>
       </div>
-      <style>{`
-        @media (min-width: 768px) {
-          section#hero {
-            grid-template-columns: 1fr 1fr;
-          }
-        }
-        @media (min-width: 1440px) {
-          section#hero {
-            max-width: 1440px;
-            margin: 0 auto;
-          }
-        }
-      `}</style>
     </section>
   )
 }
+
+export default Hero

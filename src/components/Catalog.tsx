@@ -1,43 +1,37 @@
 import React from 'react'
 import type { Escape } from '../data/escapes'
-import { EscapeCard } from './EscapeCard'
+import EscapeCard from './EscapeCard'
 
 interface CatalogProps {
   escapes: Escape[]
-  favorites: Set<string>
-  onViewDetail: (id: string) => void
-  onToggleFavorite: (id: string) => void
+  favorites: string[]
+  toggleFavorite: (id: string) => void
+  openModal: (id: string) => void
 }
 
-export const Catalog: React.FC<CatalogProps> = ({
-  escapes,
-  favorites,
-  onViewDetail,
-  onToggleFavorite,
-}) => {
+const Catalog: React.FC<CatalogProps> = ({ escapes, favorites, toggleFavorite, openModal }) => {
   if (escapes.length === 0) {
     return (
       <section
         aria-live="polite"
-        aria-atomic="true"
         style={{
-          textAlign: 'center',
           padding: '2rem',
-          color: '#142B35',
-          maxWidth: 1440,
-          margin: '0 auto',
+          textAlign: 'center',
+          color: '#142b35',
+          backgroundColor: '#f8f5ef',
         }}
       >
         <p>No se encontraron escapadas con esos filtros.</p>
         <button
           onClick={() => window.location.reload()}
           style={{
-            backgroundColor: '#F28B6B',
-            color: '#F8F5EF',
-            borderRadius: 20,
+            backgroundColor: '#147d78',
+            color: '#f8f5ef',
+            borderRadius: '8px',
             padding: '0.5rem 1rem',
-            border: 'none',
+            fontWeight: '600',
             cursor: 'pointer',
+            border: 'none',
             marginTop: '1rem',
           }}
         >
@@ -49,26 +43,28 @@ export const Catalog: React.FC<CatalogProps> = ({
 
   return (
     <section
-      id="explore"
-      aria-label="Catálogo de escapadas"
+      id="catalog"
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
         gap: '1.5rem',
-        maxWidth: 1440,
+        padding: '2rem',
+        maxWidth: '1440px',
         margin: '0 auto',
-        padding: '1rem',
+        backgroundColor: '#f8f5ef',
       }}
     >
       {escapes.map((escapeItem) => (
         <EscapeCard
           key={escapeItem.id}
           escapeItem={escapeItem}
-          onViewDetail={onViewDetail}
-          onToggleFavorite={onToggleFavorite}
-          isFavorite={favorites.has(escapeItem.id)}
+          isFavorite={favorites.includes(escapeItem.id)}
+          toggleFavorite={toggleFavorite}
+          openModal={openModal}
         />
       ))}
     </section>
   )
 }
+
+export default Catalog

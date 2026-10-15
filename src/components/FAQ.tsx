@@ -3,25 +3,19 @@ import React, { useState } from 'react'
 const faqs = [
   {
     question: '¿Cómo puedo reservar una escapada?',
-    answer:
-      'Seleccioná una escapada del catálogo, abrí el detalle y completá el formulario de reserva con tus datos.',
-  },
-  {
-    question: '¿Necesito pagar para hacer una reserva?',
-    answer: 'No, esta es una demostración y no se procesan pagos ni se envían datos.',
+    answer: 'Seleccioná una escapada y completá el formulario de reserva en el modal.',
   },
   {
     question: '¿Puedo guardar mis escapadas favoritas?',
-    answer: 'Sí, podés guardar escapadas en favoritos y consultarlas en cualquier momento.',
+    answer: 'Sí, podés guardar escapadas y consultarlas en Mis favoritos.',
   },
   {
-    question: '¿La página es accesible para personas con discapacidad?',
-    answer:
-      'Sí, la página cumple con criterios de accesibilidad, incluyendo navegación por teclado y lectores de pantalla.',
+    question: '¿Necesito una cuenta para usar Summit Escapes?',
+    answer: 'No, esta demo no requiere registro ni backend.',
   },
 ]
 
-export const FAQ: React.FC = () => {
+const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const toggle = (index: number) => {
@@ -30,59 +24,57 @@ export const FAQ: React.FC = () => {
 
   return (
     <section
-      id="faq"
-      aria-label="Preguntas frecuentes"
+      id="preguntas-frecuentes"
       style={{
-        backgroundColor: '#F8F5EF',
-        padding: '2rem 1rem',
-        maxWidth: 1440,
+        backgroundColor: '#f8f5ef',
+        color: '#142b35',
+        padding: '2rem',
+        maxWidth: '1440px',
         margin: '0 auto',
       }}
     >
-      <h2 style={{ color: '#142B35', fontSize: '2rem', marginBottom: '1rem' }}>
-        Preguntas frecuentes
-      </h2>
+      <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Preguntas frecuentes</h2>
       <dl>
-        {faqs.map((faq, index) => (
-          <div key={index} style={{ marginBottom: '1rem' }}>
+        {faqs.map((faq, i) => (
+          <div key={i} style={{ marginBottom: '1rem' }}>
             <dt>
               <button
-                aria-expanded={openIndex === index}
-                aria-controls={`faq-desc-${index}`}
-                id={`faq-btn-${index}`}
-                onClick={() => toggle(index)}
+                aria-expanded={openIndex === i}
+                aria-controls={`faq-answer-${i}`}
+                onClick={() => toggle(i)}
                 style={{
-                  backgroundColor: '#147D78',
-                  color: '#F8F5EF',
-                  borderRadius: 20,
-                  padding: '0.5rem 1rem',
+                  backgroundColor: '#147d78',
+                  color: '#f8f5ef',
                   border: 'none',
-                  cursor: 'pointer',
+                  borderRadius: '8px',
+                  padding: '0.5rem 1rem',
                   width: '100%',
                   textAlign: 'left',
+                  fontWeight: '600',
+                  cursor: 'pointer',
                 }}
               >
                 {faq.question}
               </button>
             </dt>
-            <dd
-              id={`faq-desc-${index}`}
-              role="region"
-              aria-labelledby={`faq-btn-${index}`}
-              style={{
-                maxHeight: openIndex === index ? '1000px' : '0',
-                overflow: 'hidden',
-                transition: 'max-height 0.3s ease',
-                backgroundColor: '#F8F5EF',
-                padding: openIndex === index ? '0.5rem 1rem' : '0 1rem',
-                color: '#142B35',
-              }}
-            >
-              {faq.answer}
-            </dd>
+            {openIndex === i && (
+              <dd
+                id={`faq-answer-${i}`}
+                style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#f28b6b',
+                  color: '#f8f5ef',
+                  borderRadius: '0 0 8px 8px',
+                }}
+              >
+                {faq.answer}
+              </dd>
+            )}
           </div>
         ))}
       </dl>
     </section>
   )
 }
+
+export default FAQ

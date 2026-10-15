@@ -6,7 +6,7 @@ interface BookingModalProps {
   onClose: () => void
 }
 
-export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose }) => {
+const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose }) => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [date, setDate] = useState('')
@@ -14,40 +14,43 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   const [submitted, setSubmitted] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
-  const firstInputRef = useRef<HTMLInputElement>(null)
-  const lastFocusedElement = useRef<HTMLElement | null>(null)
+  const lastFocusedButton = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
-    lastFocusedElement.current = document.activeElement as HTMLElement
-    firstInputRef.current?.focus()
-
-    const onKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault()
         onClose()
+        if (lastFocusedButton.current) {
+          lastFocusedButton.current.focus()
+        }
       }
     }
-    window.addEventListener('keydown', onKeyDown)
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
-      window.removeEventListener('keydown', onKeyDown)
-      lastFocusedElement.current?.focus()
+      document.removeEventListener('keydown', handleKeyDown)
     }
   }, [onClose])
 
+  useEffect(() => {
+    lastFocusedButton.current = document.activeElement as HTMLElement
+    if (modalRef.current) {
+      modalRef.current.focus()
+    }
+  }, [])
+
   const validate = () => {
     const newErrors: { [key: string]: string } = {}
-    if (!name.trim()) newErrors.name = 'El nombre es obligatorio.'
-    if (!email.trim()) newErrors.email = 'El correo electrónico es obligatorio.'
-    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
-      newErrors.email = 'Correo electrónico inválido.'
-    if (!date) newErrors.date = 'La fecha es obligatoria.'
-    else if (new Date(date) <= new Date()) newErrors.date = 'La fecha debe ser futura.'
-    if (travelers < 1) newErrors.travelers = 'Debe haber al menos un viajero.'
+    if (!name.trim()) newErrors.name = 'El nombre es obligatorio'
+    if (!email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
+      newErrors.email = 'Email inválido'
+    if (!date || new Date(date) <= new Date()) newErrors.date = 'Fecha debe ser futura'
+    if (travelers < 1) newErrors.travelers = 'Debe haber al menos un viajero'
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const onSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (validate()) {
       setSubmitted(true)
@@ -56,19 +59,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
 
   if (submitted) {
     return (
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div className="modal__surface">
-          <header className="modal__header">
-            <h2 id="modal-title">Reserva confirmada</h2>
-            <button onClick={onClose} aria-label="Cerrar modal">
-              ×
-            </button>
-          </header>
-          <p>
-            Gracias por reservar con Summit Escapes. Esta es una demostración, no se procesan pagos
-            ni se envían datos.
-          </p>
-          <button onClick={onClose} style={{ marginTop: '1rem' }}>
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div className="modal__surface" tabIndex={-1} ref={modalRef}>
+          <h2 id="confirm-title">Confirmación de reserva</h2>
+          <p>Esta es una demostración. No se procesarán pagos ni se enviarán datos.</p>
+          <button
+            onClick={onClose}
+            style={{
+              backgroundColor: '#147d78',
+              color: '#f8f5ef',
+              borderRadius: '8px',
+              padding: '0.5rem 1rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              border: 'none',
+            }}
+          >
             Cerrar
           </button>
         </div>
@@ -77,21 +83,19 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
   }
 
   return (
-    <div
-      className="modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-      ref={modalRef}
-    >
-      <div className="modal__surface">
+    <div className="modal" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+      <div className="modal__surface" tabIndex={-1} ref={modalRef}>
         <header className="modal__header">
-          <h2 id="modal-title">Reserva para {escapeItem.destination}</h2>
-          <button onClick={onClose} aria-label="Cerrar modal">
+          <h2 id="booking-title">Reserva para {escapeItem.destination}</h2>
+          <button
+            onClick={onClose}
+            aria-label="Cerrar modal"
+            style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}
+          >
             ×
           </button>
         </header>
-        <form onSubmit={onSubmit} noValidate>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="field">
             <label htmlFor="name">Nombre</label>
             <input
@@ -99,20 +103,18 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              ref={firstInputRef}
               aria-invalid={!!errors.name}
               aria-describedby={errors.name ? 'name-error' : undefined}
               required
             />
             {errors.name && (
-              <div id="name-error" className="field__error">
+              <p id="name-error" className="field__error">
                 {errors.name}
-              </div>
+              </p>
             )}
           </div>
-
           <div className="field">
-            <label htmlFor="email">Correo electrónico</label>
+            <label htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
@@ -123,12 +125,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
               required
             />
             {errors.email && (
-              <div id="email-error" className="field__error">
+              <p id="email-error" className="field__error">
                 {errors.email}
-              </div>
+              </p>
             )}
           </div>
-
           <div className="field">
             <label htmlFor="date">Fecha</label>
             <input
@@ -141,12 +142,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
               required
             />
             {errors.date && (
-              <div id="date-error" className="field__error">
+              <p id="date-error" className="field__error">
                 {errors.date}
-              </div>
+              </p>
             )}
           </div>
-
           <div className="field">
             <label htmlFor="travelers">Cantidad de viajeros</label>
             <input
@@ -160,22 +160,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
               required
             />
             {errors.travelers && (
-              <div id="travelers-error" className="field__error">
+              <p id="travelers-error" className="field__error">
                 {errors.travelers}
-              </div>
+              </p>
             )}
           </div>
-
           <div className="modal__actions">
             <button
               type="submit"
               style={{
-                backgroundColor: '#147D78',
-                color: '#F8F5EF',
-                borderRadius: 20,
+                backgroundColor: '#147d78',
+                color: '#f8f5ef',
+                borderRadius: '8px',
                 padding: '0.5rem 1rem',
-                border: 'none',
+                fontWeight: '600',
                 cursor: 'pointer',
+                border: 'none',
               }}
             >
               Reservar
@@ -184,12 +184,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
               type="button"
               onClick={onClose}
               style={{
-                backgroundColor: '#F28B6B',
-                color: '#F8F5EF',
-                borderRadius: 20,
+                backgroundColor: '#f28b6b',
+                color: '#f8f5ef',
+                borderRadius: '8px',
                 padding: '0.5rem 1rem',
-                border: 'none',
+                fontWeight: '600',
                 cursor: 'pointer',
+                border: 'none',
               }}
             >
               Cancelar
@@ -200,3 +201,5 @@ export const BookingModal: React.FC<BookingModalProps> = ({ escapeItem, onClose 
     </div>
   )
 }
+
+export default BookingModal
