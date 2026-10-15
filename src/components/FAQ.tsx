@@ -1,46 +1,66 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 const faqs = [
   {
     question: '¿Cómo puedo reservar una escapada?',
     answer:
-      'Seleccioná una escapada del catálogo, abrí el detalle y completá el formulario de reserva. La confirmación es solo una demostración.',
+      'Seleccioná una escapada del catálogo, abrí el detalle y completá el formulario de reserva con tus datos.',
   },
   {
-    question: '¿Se requiere un backend para esta demo?',
-    answer: 'No, toda la experiencia es estática y los datos se manejan localmente.',
+    question: '¿Necesito pagar para hacer una reserva?',
+    answer: 'No, esta es una demostración y no se procesan pagos ni se envían datos.',
   },
   {
     question: '¿Puedo guardar mis escapadas favoritas?',
+    answer: 'Sí, podés guardar escapadas en favoritos y consultarlas en cualquier momento.',
+  },
+  {
+    question: '¿La página es accesible para personas con discapacidad?',
     answer:
-      'Sí, los favoritos se guardan en localStorage y se pueden consultar en cualquier momento.',
+      'Sí, la página cumple con criterios de accesibilidad, incluyendo navegación por teclado y lectores de pantalla.',
   },
 ]
 
-export default function FAQ() {
+export const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  function toggle(index: number) {
+  const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
 
   return (
     <section
-      id="preguntas-frecuentes"
-      className="bg-[#F8F5EF] text-[#142B35] py-16 px-6 max-w-7xl mx-auto rounded-2xl shadow-md"
+      id="faq"
       aria-label="Preguntas frecuentes"
+      style={{
+        backgroundColor: '#F8F5EF',
+        padding: '2rem 1rem',
+        maxWidth: 1440,
+        margin: '0 auto',
+      }}
     >
-      <h2 className="text-3xl font-extrabold mb-8 text-center">Preguntas frecuentes</h2>
-      <dl className="max-w-3xl mx-auto space-y-4">
+      <h2 style={{ color: '#142B35', fontSize: '2rem', marginBottom: '1rem' }}>
+        Preguntas frecuentes
+      </h2>
+      <dl>
         {faqs.map((faq, index) => (
-          <div key={index}>
+          <div key={index} style={{ marginBottom: '1rem' }}>
             <dt>
               <button
                 aria-expanded={openIndex === index}
                 aria-controls={`faq-desc-${index}`}
                 id={`faq-btn-${index}`}
                 onClick={() => toggle(index)}
-                className="w-full text-left font-semibold text-[#147D78] rounded-lg p-3 hover:bg-[#147D78] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#147D78]"
+                style={{
+                  backgroundColor: '#147D78',
+                  color: '#F8F5EF',
+                  borderRadius: 20,
+                  padding: '0.5rem 1rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  width: '100%',
+                  textAlign: 'left',
+                }}
               >
                 {faq.question}
               </button>
@@ -49,11 +69,16 @@ export default function FAQ() {
               id={`faq-desc-${index}`}
               role="region"
               aria-labelledby={`faq-btn-${index}`}
-              className={`overflow-hidden transition-max-height duration-300 ease-in-out px-3 pt-2 text-[#142B35] ${
-                openIndex === index ? 'max-h-96' : 'max-h-0'
-              }`}
+              style={{
+                maxHeight: openIndex === index ? '1000px' : '0',
+                overflow: 'hidden',
+                transition: 'max-height 0.3s ease',
+                backgroundColor: '#F8F5EF',
+                padding: openIndex === index ? '0.5rem 1rem' : '0 1rem',
+                color: '#142B35',
+              }}
             >
-              <p>{faq.answer}</p>
+              {faq.answer}
             </dd>
           </div>
         ))}

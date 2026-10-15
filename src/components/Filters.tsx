@@ -1,17 +1,18 @@
-export interface FiltersProps {
+import React from 'react'
+
+interface FiltersProps {
   destination: string
   setDestination: (value: string) => void
   category: string
   setCategory: (value: string) => void
-  duration: string
-  setDuration: (value: string) => void
-  maxPrice: string
-  setMaxPrice: (value: string) => void
-  clearFilters: () => void
-  resultsCount: number
+  duration: number | null
+  setDuration: (value: number | null) => void
+  maxPrice: number | null
+  setMaxPrice: (value: number | null) => void
+  onClear: () => void
 }
 
-export default function Filters({
+export const Filters: React.FC<FiltersProps> = ({
   destination,
   setDestination,
   category,
@@ -20,80 +21,142 @@ export default function Filters({
   setDuration,
   maxPrice,
   setMaxPrice,
-  clearFilters,
-  resultsCount,
-}: FiltersProps) {
+  onClear,
+}) => {
   return (
     <section
-      aria-label="Filtros de escapadas"
-      className="filters bg-[#F8F5EF] text-[#142B35] rounded-2xl shadow-md p-6 mb-6 max-w-7xl mx-auto"
+      aria-label="Filtros de búsqueda"
+      style={{
+        backgroundColor: '#F8F5EF',
+        padding: '1rem',
+        borderRadius: 20,
+        boxShadow: '0 4px 8px rgba(20, 43, 53, 0.1)',
+        marginBottom: '2rem',
+        maxWidth: 1440,
+        margin: '0 auto',
+      }}
     >
-      <div className="field">
-        <label htmlFor="destination">Destino</label>
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        style={{ display: 'grid', gap: '1rem', gridTemplateColumns: '1fr', maxWidth: 600 }}
+      >
+        <label htmlFor="destination-input">Destino</label>
         <input
-          id="destination"
+          id="destination-input"
           type="text"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
           placeholder="Buscar por destino"
-          className="rounded-lg border border-gray-300 p-2"
+          aria-label="Buscar por destino"
+          style={{ padding: '0.5rem', borderRadius: 8, border: '1px solid #ccc' }}
         />
-      </div>
 
-      <div className="field">
-        <label htmlFor="category">Categoría</label>
+        <fieldset>
+          <legend>Categoría</legend>
+          <label>
+            <input
+              type="radio"
+              name="category"
+              value=""
+              checked={category === ''}
+              onChange={() => setCategory('')}
+            />
+            Todas
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="category"
+              value="Montaña"
+              checked={category === 'Montaña'}
+              onChange={() => setCategory('Montaña')}
+            />
+            Montaña
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="category"
+              value="Playa"
+              checked={category === 'Playa'}
+              onChange={() => setCategory('Playa')}
+            />
+            Playa
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="category"
+              value="Naturaleza"
+              checked={category === 'Naturaleza'}
+              onChange={() => setCategory('Naturaleza')}
+            />
+            Naturaleza
+          </label>
+        </fieldset>
+
+        <label htmlFor="duration-input">Duración (días)</label>
         <select
-          id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="rounded-lg border border-gray-300 p-2"
+          id="duration-input"
+          value={duration ?? ''}
+          onChange={(e) => setDuration(e.target.value ? Number(e.target.value) : null)}
+          aria-label="Filtrar por duración"
+          style={{ padding: '0.5rem', borderRadius: 8, border: '1px solid #ccc' }}
         >
-          <option value="">Todas</option>
-          <option value="Montaña">Montaña</option>
-          <option value="Playa">Playa</option>
-          <option value="Naturaleza">Naturaleza</option>
+          <option value="">Cualquier duración</option>
+          <option value="3">3 días</option>
+          <option value="4">4 días</option>
+          <option value="5">5 días</option>
+          <option value="6">6 días</option>
+          <option value="7">7 días</option>
         </select>
-      </div>
 
-      <div className="field">
-        <label htmlFor="duration">Duración (días)</label>
-        <select
-          id="duration"
-          value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-          className="rounded-lg border border-gray-300 p-2"
-        >
-          <option value="">Cualquiera</option>
-          <option value="1-3">1-3</option>
-          <option value="4-6">4-6</option>
-          <option value="7+">7+</option>
-        </select>
-      </div>
-
-      <div className="field">
-        <label htmlFor="maxPrice">Precio máximo (USD)</label>
+        <label htmlFor="price-input">Precio máximo (USD)</label>
         <input
-          id="maxPrice"
+          id="price-input"
           type="number"
           min="0"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          placeholder="Ej. 1500"
-          className="rounded-lg border border-gray-300 p-2"
+          value={maxPrice ?? ''}
+          onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : null)}
+          placeholder="Ejemplo: 1000"
+          aria-label="Filtrar por precio máximo"
+          style={{ padding: '0.5rem', borderRadius: 8, border: '1px solid #ccc' }}
         />
-      </div>
 
-      <div className="filters__footer">
-        <button
-          onClick={clearFilters}
-          className="bg-[#F28B6B] text-white rounded-lg px-4 py-2 hover:bg-[#e07a5f] focus:outline-none focus:ring-2 focus:ring-[#e07a5f]"
-        >
-          Limpiar filtros
-        </button>
-        <span aria-live="polite" aria-atomic="true">
-          {resultsCount} resultados
-        </span>
-      </div>
+        <div className="filters__footer">
+          <button
+            type="button"
+            onClick={onClear}
+            style={{
+              backgroundColor: '#F28B6B',
+              color: '#F8F5EF',
+              borderRadius: 20,
+              padding: '0.5rem 1rem',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Limpiar filtros
+          </button>
+          <span aria-live="polite" aria-atomic="true" style={{ color: '#142B35' }}>
+            {/* El contador de resultados se mostrará en el componente padre */}
+          </span>
+        </div>
+      </form>
+      <style>{`
+        fieldset {
+          border: none;
+          padding: 0;
+          margin: 0 0 1rem 0;
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        fieldset label {
+          cursor: pointer;
+          user-select: none;
+        }
+      `}</style>
     </section>
   )
 }

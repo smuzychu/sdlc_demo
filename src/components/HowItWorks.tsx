@@ -1,22 +1,47 @@
-export default function HowItWorks() {
+import React from 'react'
+
+export const HowItWorks: React.FC = () => {
   return (
     <section
-      id="como-funciona"
-      className="bg-[#F8F5EF] text-[#142B35] py-16 px-6 max-w-7xl mx-auto rounded-2xl shadow-md"
+      id="how-it-works"
+      aria-label="Cómo funciona"
+      style={{
+        backgroundColor: '#F8F5EF',
+        padding: '2rem 1rem',
+        maxWidth: 1440,
+        margin: '0 auto',
+        textAlign: 'center',
+      }}
     >
-      <h2 className="text-3xl font-extrabold mb-8 text-center">Cómo funciona</h2>
-      <ol className="list-decimal list-inside space-y-6 max-w-3xl mx-auto">
-        <li>
-          <strong>Explorá</strong> el catálogo y usá los filtros para encontrar escapadas que te
-          inspiren.
-        </li>
-        <li>
-          <strong>Guardá</strong> tus escapadas favoritas para consultarlas fácilmente después.
-        </li>
-        <li>
-          <strong>Reservá</strong> tu escapada favorita con el formulario de reserva en el detalle.
-        </li>
-      </ol>
+      <h2 style={{ color: '#142B35', fontSize: '2rem', marginBottom: '1rem' }}>Cómo funciona</h2>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gap: '2rem',
+          maxWidth: 900,
+          margin: '0 auto',
+        }}
+      >
+        <article>
+          <h3 style={{ color: '#147D78', fontSize: '1.5rem' }}>1. Explorar</h3>
+          <p style={{ color: '#142B35' }}>
+            Navegá por el catálogo y usá los filtros para encontrar tu escapada ideal.
+          </p>
+        </article>
+        <article>
+          <h3 style={{ color: '#147D78', fontSize: '1.5rem' }}>2. Reservar</h3>
+          <p style={{ color: '#142B35' }}>
+            Abrí el detalle de la escapada, completá el formulario y confirmá tu reserva.
+          </p>
+        </article>
+        <article>
+          <h3 style={{ color: '#147D78', fontSize: '1.5rem' }}>3. Disfrutar</h3>
+          <p style={{ color: '#142B35' }}>
+            Prepará tu viaje y viví experiencias inolvidables con Summit Escapes.
+          </p>
+        </article>
+      </div>
     </section>
   )
 }

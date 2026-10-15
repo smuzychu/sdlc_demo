@@ -1,30 +1,31 @@
-export default function Footer() {
+import React from 'react'
+
+export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#142B35] text-[#F8F5EF] py-8 px-6 mt-16">
-      <nav className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="font-bold text-xl">Summit Escapes</div>
-        <div className="flex space-x-6">
-          <a
-            href="#explorar"
-            className="hover:text-[#147D78] focus:text-[#147D78] focus:outline-none"
-          >
-            Explorar
-          </a>
-          <a
-            href="#como-funciona"
-            className="hover:text-[#147D78] focus:text-[#147D78] focus:outline-none"
-          >
-            Cómo funciona
-          </a>
-          <a
-            href="#preguntas-frecuentes"
-            className="hover:text-[#147D78] focus:text-[#147D78] focus:outline-none"
-          >
-            Preguntas frecuentes
-          </a>
-        </div>
+    <footer
+      style={{
+        backgroundColor: '#147D78',
+        color: '#F8F5EF',
+        padding: '1rem 1.5rem',
+        maxWidth: 1440,
+        margin: '0 auto',
+        textAlign: 'center',
+      }}
+    >
+      <nav aria-label="Navegación de pie de página">
+        <a href="#explore" style={{ color: '#F8F5EF', marginRight: '1rem' }}>
+          Explorar
+        </a>
+        <a href="#how-it-works" style={{ color: '#F8F5EF', marginRight: '1rem' }}>
+          Cómo funciona
+        </a>
+        <a href="#faq" style={{ color: '#F8F5EF' }}>
+          Preguntas frecuentes
+        </a>
       </nav>
-      <p className="text-center text-sm mt-6">Demo: destinos y reservas de ejemplo</p>
+      <p style={{ marginTop: '1rem', fontSize: '0.875rem' }}>
+        &copy; 2024 Summit Escapes. Fotos y créditos en la sección de destinos.
+      </p>
     </footer>
   )
 }
