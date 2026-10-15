@@ -1,27 +1,45 @@
+import React from 'react'
 import type { Escape } from '../data/escapes'
-import Card from './Card'
+import { EscapeCard } from './EscapeCard'
 
-export interface CatalogProps {
+interface CatalogProps {
   escapes: Escape[]
-  onViewDetail: (escape: Escape) => void
-  onToggleFavorite: (id: string) => void
   favorites: Set<string>
+  onViewDetail: (id: string) => void
+  onToggleFavorite: (id: string) => void
 }
 
-export default function Catalog({
+export const Catalog: React.FC<CatalogProps> = ({
   escapes,
+  favorites,
   onViewDetail,
   onToggleFavorite,
-  favorites,
-}: CatalogProps) {
+}) => {
   if (escapes.length === 0) {
     return (
-      <section className="empty-state max-w-7xl mx-auto p-8 rounded-2xl border border-dashed border-gray-400">
+      <section
+        aria-live="polite"
+        aria-atomic="true"
+        style={{
+          textAlign: 'center',
+          padding: '2rem',
+          color: '#142B35',
+          maxWidth: 1440,
+          margin: '0 auto',
+        }}
+      >
         <p>No se encontraron escapadas con esos filtros.</p>
         <button
-          onClick={() => onToggleFavorite('')}
-          className="mt-4 bg-[#F28B6B] text-white rounded-lg px-4 py-2 hover:bg-[#e07a5f] focus:outline-none focus:ring-2 focus:ring-[#e07a5f]"
-          aria-label="Restablecer filtros"
+          onClick={() => window.location.reload()}
+          style={{
+            backgroundColor: '#F28B6B',
+            color: '#F8F5EF',
+            borderRadius: 20,
+            padding: '0.5rem 1rem',
+            border: 'none',
+            cursor: 'pointer',
+            marginTop: '1rem',
+          }}
         >
           Restablecer filtros
         </button>
@@ -31,17 +49,24 @@ export default function Catalog({
 
   return (
     <section
-      id="explorar"
+      id="explore"
       aria-label="Catálogo de escapadas"
-      className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: '1.5rem',
+        maxWidth: 1440,
+        margin: '0 auto',
+        padding: '1rem',
+      }}
     >
-      {escapes.map((escape) => (
-        <Card
-          key={escape.id}
-          escape={escape}
+      {escapes.map((escapeItem) => (
+        <EscapeCard
+          key={escapeItem.id}
+          escapeItem={escapeItem}
           onViewDetail={onViewDetail}
           onToggleFavorite={onToggleFavorite}
-          isFavorite={favorites.has(escape.id)}
+          isFavorite={favorites.has(escapeItem.id)}
         />
       ))}
     </section>

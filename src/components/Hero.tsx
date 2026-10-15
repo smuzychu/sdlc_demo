@@ -1,48 +1,96 @@
-export default function Hero() {
+import React from 'react'
+
+export const Hero: React.FC = () => {
   return (
     <section
       id="hero"
-      className="bg-[#F8F5EF] text-[#142B35] py-16 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+      aria-label="Tu próxima pausa empieza acá"
+      style={{
+        backgroundColor: '#F8F5EF',
+        padding: '2rem 1rem',
+        maxWidth: 1440,
+        margin: '0 auto',
+        display: 'grid',
+        gridTemplateColumns: '1fr',
+        gap: '2rem',
+      }}
     >
-      <div>
-        <p className="text-sm font-semibold text-[#147D78] uppercase mb-2">
+      <div style={{ maxWidth: 600 }}>
+        <p
+          style={{
+            color: '#147D78',
+            fontWeight: '600',
+            fontSize: '1.25rem',
+            marginBottom: '0.5rem',
+          }}
+        >
           Tu próxima pausa empieza acá
         </p>
-        <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
+        <h1
+          style={{
+            color: '#142B35',
+            fontSize: '2.5rem',
+            marginTop: 0,
+            marginBottom: '1rem',
+          }}
+        >
           Escapate de la rutina. Volvé con historias.
         </h1>
-        <p className="mb-6 max-w-lg">
+        <p style={{ color: '#142B35', fontSize: '1rem', marginBottom: '1.5rem' }}>
           Descubrí destinos únicos y experiencias inolvidables para tu próxima escapada.
         </p>
         <a
-          href="#explorar"
-          className="inline-block bg-[#F28B6B] text-white rounded-2xl px-8 py-3 font-semibold hover:bg-[#e07a5f] focus:outline-none focus:ring-2 focus:ring-[#e07a5f]"
+          href="#explore"
+          style={{
+            backgroundColor: '#147D78',
+            color: '#F8F5EF',
+            padding: '0.75rem 1.5rem',
+            borderRadius: 20,
+            textDecoration: 'none',
+            fontWeight: '600',
+            display: 'inline-block',
+            transition: 'background-color 0.3s ease',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#125d5d')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#147D78')}
+          onFocus={(e) => (e.currentTarget.style.backgroundColor = '#125d5d')}
+          onBlur={(e) => (e.currentTarget.style.backgroundColor = '#147D78')}
         >
           Explorar escapadas
         </a>
       </div>
-      <div aria-hidden="true" className="flex justify-center">
-        <svg
-          width="320"
-          height="240"
-          viewBox="0 0 320 240"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-label="Ilustración de paisaje con montañas, costa y bosque"
-        >
-          <rect width="320" height="240" fill="#F8F5EF" />
-          {/* Montañas */}
-          <polygon points="40,200 80,120 120,200" fill="#147D78" />
-          <polygon points="70,200 110,140 150,200" fill="#F28B6B" />
-          {/* Costa */}
-          <rect x="160" y="160" width="120" height="40" fill="#147D78" />
-          <circle cx="220" cy="160" r="20" fill="#F28B6B" />
-          {/* Bosque */}
-          <rect x="260" y="100" width="40" height="80" fill="#147D78" />
-          <polygon points="260,100 280,60 300,100" fill="#F28B6B" />
-        </svg>
+      <div
+        aria-hidden="true"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <img
+          src="/assets/mountain-hero.svg"
+          alt="Ilustración de paisaje montañoso"
+          style={{
+            width: '100%',
+            height: 'auto',
+            borderRadius: 20,
+            boxShadow: '0 8px 16px rgba(20, 43, 53, 0.25)',
+          }}
+        />
       </div>
+      <style>{`
+        @media (min-width: 768px) {
+          section#hero {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+        @media (min-width: 1440px) {
+          section#hero {
+            max-width: 1440px;
+            margin: 0 auto;
+          }
+        }
+      `}</style>
     </section>
   )
 }

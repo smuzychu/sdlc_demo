@@ -8,6 +8,12 @@ export interface Escape {
   alt: string
   description: string
   itinerary: string[]
+  credits?: {
+    author: string
+    source: string
+    license: string
+    licenseUrl: string
+  }
 }
 
 export const escapes: Escape[] = [
@@ -17,8 +23,8 @@ export const escapes: Escape[] = [
     category: 'Montaña',
     duration: 5,
     price: 1200,
-    image: '/escapes/mountains.svg',
-    alt: 'Ilustración de montañas nevadas',
+    image: '/assets/mountain-hero.svg',
+    alt: 'Ilustración de paisaje montañoso',
     description: 'Explora los majestuosos picos de Los Andes y disfruta de caminatas inolvidables.',
     itinerary: [
       'Día 1: Llegada y aclimatación en el campamento base.',
@@ -34,8 +40,8 @@ export const escapes: Escape[] = [
     category: 'Playa',
     duration: 7,
     price: 1500,
-    image: '/escapes/coast.svg',
-    alt: 'Ilustración de playa caribeña con palmeras',
+    image: '/assets/coast.jpg',
+    alt: 'Foto de playa caribeña con palmeras',
     description: 'Relájate en las playas de arena blanca y aguas cristalinas del Caribe.',
     itinerary: [
       'Día 1: Llegada y bienvenida en el resort.',
@@ -46,6 +52,12 @@ export const escapes: Escape[] = [
       'Día 6: Tiempo libre y spa.',
       'Día 7: Regreso.',
     ],
+    credits: {
+      author: 'UpstateNYer',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 3.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+    },
   },
   {
     id: 'escape3',
@@ -53,7 +65,7 @@ export const escapes: Escape[] = [
     category: 'Naturaleza',
     duration: 4,
     price: 900,
-    image: '/escapes/forest.svg',
+    image: '/assets/forest.svg',
     alt: 'Ilustración de bosque frondoso',
     description: 'Sumérgete en la tranquilidad del bosque y conecta con la naturaleza.',
     itinerary: [
@@ -69,8 +81,8 @@ export const escapes: Escape[] = [
     category: 'Montaña',
     duration: 6,
     price: 1300,
-    image: '/escapes/mountains.svg',
-    alt: 'Ilustración de montañas rocosas',
+    image: '/assets/mountain-hero.svg',
+    alt: 'Ilustración de paisaje montañoso',
     description: 'Aventúrate en las Montañas Rocosas con paisajes impresionantes y aire puro.',
     itinerary: [
       'Día 1: Llegada y descanso.',
@@ -87,14 +99,20 @@ export const escapes: Escape[] = [
     category: 'Playa',
     duration: 3,
     price: 700,
-    image: '/escapes/coast.svg',
-    alt: 'Ilustración de playa soleada',
+    image: '/assets/coast.jpg',
+    alt: 'Foto de playa soleada',
     description: 'Disfruta de un fin de semana relajante en la Playa del Sol.',
     itinerary: [
       'Día 1: Llegada y puesta de sol en la playa.',
       'Día 2: Día completo de descanso y actividades acuáticas.',
       'Día 3: Despedida y regreso.',
     ],
+    credits: {
+      author: 'UpstateNYer',
+      source: 'Wikimedia Commons',
+      license: 'CC BY-SA 3.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0',
+    },
   },
   {
     id: 'escape6',
@@ -102,8 +120,8 @@ export const escapes: Escape[] = [
     category: 'Naturaleza',
     duration: 5,
     price: 1100,
-    image: '/escapes/forest.svg',
-    alt: 'Ilustración de reserva natural',
+    image: '/assets/forest.svg',
+    alt: 'Ilustración de bosque frondoso',
     description:
       'Explora la biodiversidad de la reserva natural y participa en actividades ecológicas.',
     itinerary: [

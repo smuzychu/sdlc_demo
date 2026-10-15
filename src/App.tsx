@@ -1,59 +1,27 @@
-import { useState, useEffect, useRef } from 'react'
-import Header from './components/Header'
-import Hero from './components/Hero'
-import Filters from './components/Filters'
-import Catalog from './components/Catalog'
-import DetailModal from './components/DetailModal'
-import HowItWorks from './components/HowItWorks'
-import FAQ from './components/FAQ'
-import Footer from './components/Footer'
+import React, { useState, useEffect } from 'react'
+import { Navbar } from './components/Navbar'
+import { Hero } from './components/Hero'
+import { Filters } from './components/Filters'
+import { Catalog } from './components/Catalog'
+import { BookingModal } from './components/BookingModal'
+import { HowItWorks } from './components/HowItWorks'
+import { FAQ } from './components/FAQ'
+import { Footer } from './components/Footer'
 import { escapes, type Escape } from './data/escapes'
 
-function filterEscapes(
-  escapes: Escape[],
-  destination: string,
-  category: string,
-  duration: string,
-  maxPrice: string,
-) {
-  return escapes.filter((escape) => {
-    if (destination && !escape.destination.toLowerCase().includes(destination.toLowerCase())) {
-      return false
-    }
-    if (category && category !== '' && escape.category !== category) {
-      return false
-    }
-    if (duration) {
-      if (duration === '1-3' && (escape.duration < 1 || escape.duration > 3)) {
-        return false
-      }
-      if (duration === '4-6' && (escape.duration < 4 || escape.duration > 6)) {
-        return false
-      }
-      if (duration === '7+' && escape.duration < 7) {
-        return false
-      }
-    }
-    if (maxPrice) {
-      const max = Number(maxPrice)
-      if (escape.price > max) {
-        return false
-      }
-    }
-    return true
-  })
-}
-
-export default function App() {
-  const [destination, setDestination] = useState('')
-  const [category, setCategory] = useState('')
-  const [duration, setDuration] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
+export const App: React.FC = () => {
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
-  const [selectedEscape, setSelectedEscape] = useState<Escape | null>(null)
+  const [filters, setFilters] = useState({
+    destination: '',
+    category: '',
+    duration: null as number | null,
+    maxPrice: null as number | null,
+  })
+  const [filteredEscapes, setFilteredEscapes] = useState<Escape[]>(escapes)
+  const [modalEscape, setModalEscape] = useState<Escape | null>(null)
 
-  // Load favorites from localStorage
   useEffect(() => {
+    // Load favorites from localStorage
     const stored = localStorage.getItem('summit-escapes-favorites')
     if (stored) {
       try {
@@ -65,80 +33,88 @@ export default function App() {
     }
   }, [])
 
-  // Save favorites to localStorage
   useEffect(() => {
+    // Save favorites to localStorage
     localStorage.setItem('summit-escapes-favorites', JSON.stringify(Array.from(favorites)))
   }, [favorites])
 
-  const filteredEscapes = filterEscapes(escapes, destination, category, duration, maxPrice)
-
-  function toggleFavorite(id: string) {
-    if (!id) {
-      // Used for reset filters button in empty state
-      clearFilters()
-      return
+  useEffect(() => {
+    // Filter escapes
+    let result = escapes
+    if (filters.destination.trim()) {
+      const destLower = filters.destination.toLowerCase()
+      result = result.filter((e) => e.destination.toLowerCase().includes(destLower))
     }
+    if (filters.category) {
+      result = result.filter((e) => e.category === filters.category)
+    }
+    if (filters.duration !== null) {
+      result = result.filter((e) => e.duration === filters.duration)
+    }
+    if (filters.maxPrice !== null) {
+      result = result.filter((e) => e.price <= filters.maxPrice!)
+    }
+    setFilteredEscapes(result)
+  }, [filters])
+
+  const toggleFavorite = (id: string) => {
     setFavorites((prev) => {
       const newSet = new Set(prev)
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
-        newSet.add(id)
-      }
+      if (newSet.has(id)) newSet.delete(id)
+      else newSet.add(id)
       return newSet
     })
   }
 
-  function clearFilters() {
-    setDestination('')
-    setCategory('')
-    setDuration('')
-    setMaxPrice('')
-  }
-
-  // Modal focus management
-  const lastFocusedButton = useRef<HTMLButtonElement | null>(null)
-
-  function openDetail(escapeItem: Escape) {
-    setSelectedEscape(escapeItem)
-    // Save the button that opened the modal
-    lastFocusedButton.current = document.activeElement as HTMLButtonElement
-  }
-
-  function closeDetail() {
-    setSelectedEscape(null)
-    // Return focus to the button that opened the modal
-    lastFocusedButton.current?.focus()
+  const clearFilters = () => {
+    setFilters({ destination: '', category: '', duration: null, maxPrice: null })
   }
 
   return (
     <>
-      <Header />
-      <main className="min-h-screen bg-[#F8F5EF] text-[#142B35]">
-        <Hero />
+      <Navbar
+        favoritesCount={favorites.size}
+        onFavoritesClick={() => setFilters({ ...filters, category: '', destination: '' })}
+      />
+      <Hero />
+      <main id="main-content">
         <Filters
-          destination={destination}
-          setDestination={setDestination}
-          category={category}
-          setCategory={setCategory}
-          duration={duration}
-          setDuration={setDuration}
-          maxPrice={maxPrice}
-          setMaxPrice={setMaxPrice}
-          clearFilters={clearFilters}
-          resultsCount={filteredEscapes.length}
+          destination={filters.destination}
+          setDestination={(value) => setFilters({ ...filters, destination: value })}
+          category={filters.category}
+          setCategory={(value) => setFilters({ ...filters, category: value })}
+          duration={filters.duration}
+          setDuration={(value) => setFilters({ ...filters, duration: value })}
+          maxPrice={filters.maxPrice}
+          setMaxPrice={(value) => setFilters({ ...filters, maxPrice: value })}
+          onClear={clearFilters}
         />
+        <p
+          style={{
+            maxWidth: 1440,
+            margin: '0 auto 1rem auto',
+            padding: '0 1rem',
+            color: '#142B35',
+          }}
+        >
+          Resultados: {filteredEscapes.length}
+        </p>
         <Catalog
           escapes={filteredEscapes}
-          onViewDetail={openDetail}
-          onToggleFavorite={toggleFavorite}
           favorites={favorites}
+          onViewDetail={(id) => {
+            const found = escapes.find((e) => e.id === id)
+            if (found) setModalEscape(found)
+          }}
+          onToggleFavorite={toggleFavorite}
         />
         <HowItWorks />
         <FAQ />
       </main>
       <Footer />
-      {selectedEscape && <DetailModal escape={selectedEscape} onClose={closeDetail} />}
+      {modalEscape && (
+        <BookingModal escapeItem={modalEscape} onClose={() => setModalEscape(null)} />
+      )}
     </>
   )
 }
