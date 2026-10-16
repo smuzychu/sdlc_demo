@@ -468,7 +468,8 @@ const App = () => {
       <aside className="sidebar">
         <div>
           <span className="eyebrow">Nexo Spend</span>
-          <h1>Portal ejecutivo de compras</h1>
+          <h1>Nexo Spend</h1>
+          <p>Portal ejecutivo de compras</p>
           <p>Demostración: datos ficticios</p>
         </div>
         <nav aria-label="Secciones" className="side-nav">
@@ -586,7 +587,7 @@ const App = () => {
             </div>
           </article>
         </section>
-        <section className="requests-grid" id="requests">
+        <section className="requests-grid" id="requests" aria-label="Solicitudes">
           <article className="panel table-panel">
             <div className="panel-head">
               <h3>Solicitudes</h3>

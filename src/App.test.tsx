@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
@@ -28,19 +28,22 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    // Initially all requests visible
-    expect(screen.getAllByRole('row', { name: /supplier/i })).toHaveLength(20)
+    const requestsSection = screen.getByRole('region', { name: /Solicitudes/i })
+    const requestsTable = within(requestsSection).getByRole('table')
+    const rows = within(requestsTable).getAllByRole('row')
+    expect(rows).toHaveLength(21)
 
-    // Select a department
-    await user.selectOptions(screen.getByLabelText(/Departamento/i), 'Tecnología')
-    // Should see only requests from Tecnología
-    const rows = screen.getAllByRole('row')
-    // Each row contains supplier and department in first cell
-    // We'll just check that the number of rows is less than 20 and >0
-    expect(rows.length).toBeGreaterThan(0)
-    expect(rows.length).toBeLessThan(20)
-    // Verify each row contains Tecnología
-    for (const row of rows) {
+    const departmentFilter = screen.getAllByLabelText(/Departamento/i)[0]
+    if (!departmentFilter) {
+      throw new Error('Missing department filter')
+    }
+
+    await user.selectOptions(departmentFilter, 'Tecnología')
+    const filteredRows = within(requestsTable).getAllByRole('row')
+
+    expect(filteredRows.length).toBeGreaterThan(0)
+    expect(filteredRows.length).toBeLessThan(21)
+    for (const row of filteredRows.slice(1)) {
       expect(row.textContent).toContain('Tecnología')
     }
   })
@@ -49,22 +52,31 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    // Click on Nueva solicitud link (sidebar nav)
     await user.click(screen.getByRole('link', { name: /Nueva solicitud/i }))
 
-    // Fill form
     await user.type(screen.getByLabelText(/Proveedor/i), 'Acme Corp')
     await user.type(screen.getByLabelText(/Importe/i), '1000')
     await user.type(screen.getByLabelText(/Responsable/i), 'Ana Lopez')
-    await user.selectOptions(screen.getByLabelText(/Departamento/i), 'Marketing')
-    await user.selectOptions(screen.getByLabelText(/Período/i), 'Actual')
+
+    const departmentSelects = screen.getAllByLabelText(/Departamento/i)
+    const periodSelects = screen.getAllByLabelText(/Período/i)
+    const createDepartmentSelect = departmentSelects[1]
+    const createPeriodSelect = periodSelects[1]
+    if (!createDepartmentSelect || !createPeriodSelect) {
+      throw new Error('Missing create form selects')
+    }
+
+    await user.selectOptions(createDepartmentSelect, 'Marketing')
+    await user.selectOptions(createPeriodSelect, 'Actual')
     await user.type(screen.getByLabelText(/Descripción/i), 'Demo request')
 
     await user.click(screen.getByRole('button', { name: /Crear solicitud/i }))
 
-    // Should see new request in table
-    expect(screen.getByText(/Acme Corp/i)).toBeVisible()
-    expect(screen.getByText(/1.000/i)).toBeVisible() // formatted as currency
-    expect(screen.getByText(/Ana Lopez/i)).toBeVisible()
+    const requestsSection = screen.getByRole('region', { name: /Solicitudes/i })
+    const requestsTable = within(requestsSection).getByRole('table')
+    const newRequestRow = within(requestsTable).getByRole('row', { name: /Acme Corp/i })
+    expect(newRequestRow).toBeVisible()
+    expect(within(newRequestRow).getByText(/1.000/i)).toBeVisible()
+    expect(within(newRequestRow).getByText(/Ana Lopez/i)).toBeVisible()
   })
 })
