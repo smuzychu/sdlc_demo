@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
@@ -8,40 +8,63 @@ describe('App', () => {
     localStorage.clear()
   })
 
-  it('renders the seeded task board', () => {
+  it('renders the Nexo Spend header', () => {
     render(<App />)
 
-    expect(
-      screen.getByRole('heading', { name: 'Organizá el trabajo sin perder el foco.' }),
-    ).toBeVisible()
-    expect(screen.getByText('Definir alcance del MVP')).toBeVisible()
-    expect(screen.getByText('Implementar pantalla principal')).toBeVisible()
+    expect(screen.getByRole('heading', { name: /Nexo Spend/i })).toBeVisible()
+    expect(screen.getByText(/Portal ejecutivo de compras/i)).toBeVisible()
+    expect(screen.getByText(/Demostración: datos ficticios/i)).toBeVisible()
   })
 
-  it('creates a new task', async () => {
+  it('shows KPI cards', () => {
+    render(<App />)
+
+    expect(screen.getByText(/Gasto mensual/i)).toBeVisible()
+    expect(screen.getByText(/Presupuesto disponible/i)).toBeVisible()
+    expect(screen.getByText(/Solicitudes pendientes/i)).toBeVisible()
+  })
+
+  it('filters requests by department', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Nueva tarea' }))
+    // Initially all requests visible
+    expect(screen.getAllByRole('row', { name: /supplier/i })).toHaveLength(20)
 
-    const dialog = screen.getByRole('dialog')
-    await user.type(within(dialog).getByLabelText('Título'), 'Configurar branch protection')
-    await user.type(
-      within(dialog).getByLabelText('Descripción'),
-      'Exigir validaciones antes del merge.',
-    )
-    await user.click(within(dialog).getByRole('button', { name: 'Crear tarea' }))
-
-    expect(screen.getByText('Configurar branch protection')).toBeVisible()
+    // Select a department
+    await user.selectOptions(screen.getByLabelText(/Departamento/i), 'Tecnología')
+    // Should see only requests from Tecnología
+    const rows = screen.getAllByRole('row')
+    // Each row contains supplier and department in first cell
+    // We'll just check that the number of rows is less than 20 and >0
+    expect(rows.length).toBeGreaterThan(0)
+    expect(rows.length).toBeLessThan(20)
+    // Verify each row contains Tecnología
+    for (const row of rows) {
+      expect(row.textContent).toContain('Tecnología')
+    }
   })
 
-  it('filters tasks by search text', async () => {
+  it('creates a new request', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.type(screen.getByLabelText('Buscar'), 'despliegue')
+    // Click on Nueva solicitud link (sidebar nav)
+    await user.click(screen.getByRole('link', { name: /Nueva solicitud/i }))
 
-    expect(screen.getByText('Documentar despliegue')).toBeVisible()
-    expect(screen.queryByText('Implementar pantalla principal')).not.toBeInTheDocument()
+    // Fill form
+    await user.type(screen.getByLabelText(/Proveedor/i), 'Acme Corp')
+    await user.type(screen.getByLabelText(/Importe/i), '1000')
+    await user.type(screen.getByLabelText(/Responsable/i), 'Ana Lopez')
+    await user.selectOptions(screen.getByLabelText(/Departamento/i), 'Marketing')
+    await user.selectOptions(screen.getByLabelText(/Período/i), 'Actual')
+    await user.type(screen.getByLabelText(/Descripción/i), 'Demo request')
+
+    await user.click(screen.getByRole('button', { name: /Crear solicitud/i }))
+
+    // Should see new request in table
+    expect(screen.getByText(/Acme Corp/i)).toBeVisible()
+    expect(screen.getByText(/1.000/i)).toBeVisible() // formatted as currency
+    expect(screen.getByText(/Ana Lopez/i)).toBeVisible()
   })
 })
